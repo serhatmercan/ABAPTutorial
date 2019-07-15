@@ -1,0 +1,63 @@
+* Öğrenci, Belge Numarası & Mali Yıl & Şirket Kodu bilgilerini içerecek üç kutucuk ve 
+* “belgeye git” yazisina sahip bir düğme içeren bir ekran yaratsin. 
+* Kutucuklar doldurulup enter’a basildiğinda; Program, böyle bir belge olup olmadiğini kontrol etsin. 
+* Belge yoksa, “belgeye git” düğmesi tiklanamaz hale gelsin. Belge varsa, düğme tiklanabilir hale gelsin.
+
+TABLES: bseg.
+
+DATA gv_flag(1).
+
+START-OF-SELECTION.
+  CALL SCREEN 100.
+END-OF-SELECTION.
+*----------------------------------------------------------------------*
+*      Module  STATUS_0100  OUTPUT
+*----------------------------------------------------------------------*
+MODULE status_0100 OUTPUT.
+  SET PF-STATUS 'STATUS'.
+  SET TITLEBAR  'TITLE'.
+
+LOOP AT SCREEN.
+  IF screen-name = 'BTN_GIT'.
+    IF gv_flag = 'X'.
+      screen-invisible = '1'.
+    ELSE.
+      screen-invisible = '0'.
+    ENDIF.
+    MODIFY SCREEN.
+  ENDIF.
+ENDLOOP.
+
+ENDMODULE.
+*---------------------------------------------------------------------*
+*      Module  USER_COMMAND_0100  INPUT
+*---------------------------------------------------------------------*
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+
+  PERFORM check_document.
+
+  WHEN 'CANCEL' OR 'BACK' OR 'EXIT'.
+    LEAVE TO SCREEN 0.
+
+  MODIFY SCREEN.
+
+  ENDCASE.
+ENDMODULE.
+*---------------------------------------------------------------------*
+*      Form  CHECK_DOCUMENT
+*---------------------------------------------------------------------*
+FORM check_document .
+SELECT SINGLE *
+ FROM bseg
+ WHERE bseg~belnr EQ bseg-belnr
+ AND bseg~gjahr   EQ bseg-gjahr
+ AND bseg~bukrs   EQ bseg-bukrs.
+
+IF sy-subrc <> 0.
+  gv_flag = 'X'.
+ELSE.
+  CLEAR gv_flag.
+ENDIF.
+
+ENDFORM.
