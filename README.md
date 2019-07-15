@@ -1,2 +1,0 @@
-# ABAPTutorial
-Basic ABAP Tutorial
