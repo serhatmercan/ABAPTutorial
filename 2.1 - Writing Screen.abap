@@ -1,4 +1,4 @@
-* Ekrana haftanın günlerini alt alta yazdıran bir program.
+* Haftanın günlerini alt alta yazdıran Program.
 
 START-OF-SELECTION.
 WRITE: / 'Pazartesi',
